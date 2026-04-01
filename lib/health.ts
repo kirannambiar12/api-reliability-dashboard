@@ -3,14 +3,7 @@ import {
   LATENCY_UPPER_SLOW_MS,
   LATENCY_UPPER_UP_MS,
 } from "@/lib/constants";
-import type { ServiceStatus } from "@/lib/types";
-
-export interface HealthCheckResult {
-  status: ServiceStatus;
-  latencyMs: number;
-  lastCheckedAt: string;
-  healthScore: number;
-}
+import type { HealthCheckResult, ServiceStatus } from "@/lib/types";
 
 function isHttp2xx(statusCode: number): boolean {
   return statusCode >= 200 && statusCode < 300;

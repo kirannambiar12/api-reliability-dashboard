@@ -26,3 +26,10 @@ export interface ServicesListResponse {
 export interface ServiceResponse {
   service: Service;
 }
+
+export interface HealthCheckResult {
+  status: ServiceStatus;
+  latencyMs: number;
+  lastCheckedAt: string;
+  healthScore: number;
+}
