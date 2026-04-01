@@ -14,7 +14,12 @@ import {
   refreshService,
 } from "@/lib/api-client";
 import { API_PATHS, UI_TEXT } from "@/lib/dashboard-constants";
-import { formatLatency, formatTimestamp, statusBadgeClasses } from "@/lib/dashboard-utils";
+import {
+  formatDate,
+  formatLatency,
+  formatTime,
+  statusBadgeClasses,
+} from "@/lib/dashboard-utils";
 
 export default function Home() {
   const queryClient = useQueryClient();
@@ -174,7 +179,7 @@ export default function Home() {
                     deleteMutation.isPending && deleteMutation.variables === service.id;
                   const isBusy = isRefreshBusy || isDeleteBusy;
                   return (
-                    <tr key={service.id} className="border-b border-zinc-100 align-top">
+                    <tr key={service.id} className="border-b border-zinc-100 align-middle">
                       <td className="px-4 py-4">
                         <p className="font-medium text-zinc-900">{service.name}</p>
                         <p className="mt-1 break-all text-xs leading-5 text-zinc-500">{service.url}</p>
@@ -185,7 +190,10 @@ export default function Home() {
                         </span>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap">{formatLatency(service.latencyMs)}</td>
-                      <td className="px-4 py-4 text-zinc-700">{formatTimestamp(service.lastCheckedAt)}</td>
+                      <td className="px-4 py-4 text-zinc-700">
+                        <p>{formatDate(service.lastCheckedAt)}</p>
+                        <p className="text-xs text-zinc-500">{formatTime(service.lastCheckedAt)}</p>
+                      </td>
                       <td className="px-4 py-4 whitespace-nowrap font-medium">{service.healthScore}</td>
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2 whitespace-nowrap">
