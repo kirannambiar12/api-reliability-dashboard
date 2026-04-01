@@ -1,5 +1,6 @@
 export const API_PATHS = {
   services: "/api/services",
+  refreshAll: "/api/services/refresh",
   refresh: (serviceId: string) => `/api/services/${serviceId}/refresh`,
   byId: (serviceId: string) => `/api/services/${serviceId}`,
 };

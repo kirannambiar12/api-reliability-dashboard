@@ -37,6 +37,11 @@ export async function refreshService(serviceId: string): Promise<ServiceResponse
   return parseResponse<ServiceResponse>(response);
 }
 
+export async function refreshAllServices(): Promise<ServicesListResponse> {
+  const response = await fetch(API_PATHS.refreshAll, { method: "POST" });
+  return parseResponse<ServicesListResponse>(response);
+}
+
 export async function deleteService(serviceId: string): Promise<void> {
   const response = await fetch(API_PATHS.byId(serviceId), { method: "DELETE" });
   await parseResponse<{ ok: true }>(response);
