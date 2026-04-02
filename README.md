@@ -127,6 +127,11 @@ Config: `.husky/pre-commit`
 - `data/`: local persistence (JSON)
 - `lib/`: types, constants, utilities, validators, health logic
 
-## Live demo
+## Local setup
 
-Hosted at: https://kn-ard.vercel.app/
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`.
