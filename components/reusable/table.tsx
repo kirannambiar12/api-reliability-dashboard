@@ -22,13 +22,7 @@ export interface TableProps<T> {
   className?: string;
 }
 
-export function Table<T>({
-  columns,
-  data,
-  getRowKey,
-  isRowBusy,
-  className = "",
-}: TableProps<T>) {
+export function Table<T>({ columns, data, getRowKey, isRowBusy, className = "" }: TableProps<T>) {
   return (
     <div className={`overflow-x-auto ${className}`.trim()}>
       <table className="min-w-full table-fixed text-left text-sm">
@@ -51,10 +45,7 @@ export function Table<T>({
             return (
               <tr key={key} className="border-b border-zinc-100 align-middle">
                 {columns.map((col) => (
-                  <td
-                    key={col.id}
-                    className={`px-4 py-4 ${col.cellClassName ?? ""}`.trim()}
-                  >
+                  <td key={col.id} className={`px-4 py-4 ${col.cellClassName ?? ""}`.trim()}>
                     {col.render({ row, rowIndex, rowBusy })}
                   </td>
                 ))}

@@ -45,9 +45,7 @@ export function ServicesSection({
         <ErrorState message={servicesQueryError || actionError || "Something went wrong"} />
       )}
 
-      {isServicesLoading && (
-        <LoadingState message={UI_TEXT.loadingServices} />
-      )}
+      {isServicesLoading && <LoadingState message={UI_TEXT.loadingServices} />}
 
       {!isServicesLoading && services.length === 0 && (
         <EmptyState message={UI_TEXT.emptyServices} />

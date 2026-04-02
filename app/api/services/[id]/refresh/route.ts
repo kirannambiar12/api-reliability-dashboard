@@ -14,7 +14,11 @@ export async function POST(
   const { id } = await context.params;
 
   if (!id) {
-    return errorResponse(ApiErrorCode.ValidationError, "Service id is required.", HttpStatusCode.BadRequest);
+    return errorResponse(
+      ApiErrorCode.ValidationError,
+      "Service id is required.",
+      HttpStatusCode.BadRequest,
+    );
   }
 
   const services = await readServices();

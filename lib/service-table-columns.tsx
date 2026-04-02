@@ -1,11 +1,6 @@
 import { Button } from "@/components/ui/button";
 import type { TableColumn } from "@/components/reusable/table";
-import {
-  formatDate,
-  formatLatency,
-  formatTime,
-  statusBadgeClasses,
-} from "@/lib/dashboard-utils";
+import { formatDate, formatLatency, formatTime, statusBadgeClasses } from "@/lib/dashboard-utils";
 import type { Service } from "@/lib/types";
 
 export interface ServiceTableColumnsParams {

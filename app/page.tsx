@@ -16,10 +16,7 @@ import {
   refreshService,
 } from "@/lib/api-client";
 import { API_PATHS, UI_TEXT } from "@/lib/dashboard-constants";
-import {
-  getServiceRowBusy,
-  getServiceTableColumns,
-} from "@/lib/service-table-columns";
+import { getServiceRowBusy, getServiceTableColumns } from "@/lib/service-table-columns";
 
 export default function Home() {
   const queryClient = useQueryClient();
@@ -42,10 +39,7 @@ export default function Home() {
     queryFn: fetchServices,
   });
 
-  const {
-    mutateAsync: mutateCreate,
-    isPending: isCreatePending,
-  } = useMutation({
+  const { mutateAsync: mutateCreate, isPending: isCreatePending } = useMutation({
     mutationFn: createService,
     onSuccess: async () => {
       setName("");
@@ -85,10 +79,7 @@ export default function Home() {
     },
   });
 
-  const {
-    mutateAsync: mutateRefreshAll,
-    isPending: isRefreshAllPending,
-  } = useMutation({
+  const { mutateAsync: mutateRefreshAll, isPending: isRefreshAllPending } = useMutation({
     mutationFn: refreshAllServices,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: [API_PATHS.services] });
@@ -143,8 +134,7 @@ export default function Home() {
     setPendingDeleteService(null);
   }
 
-  const servicesQueryError =
-    servicesError instanceof Error ? servicesError.message : null;
+  const servicesQueryError = servicesError instanceof Error ? servicesError.message : null;
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-6 px-6 py-8">
@@ -166,15 +156,15 @@ export default function Home() {
             onChange={(event) => setUrl(event.target.value)}
             placeholder={UI_TEXT.urlInputPlaceholder}
           />
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={isCreatePending}
-          >
+          <Button type="submit" variant="primary" disabled={isCreatePending}>
             {isCreatePending ? "Adding..." : "Add"}
           </Button>
         </form>
-        {formError ? <div className="mt-2"><ErrorState message={formError} /></div> : null}
+        {formError ? (
+          <div className="mt-2">
+            <ErrorState message={formError} />
+          </div>
+        ) : null}
       </section>
 
       <ServicesSection

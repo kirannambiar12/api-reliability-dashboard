@@ -6,7 +6,9 @@ import { ApiErrorCode } from "@/lib/types";
 import { HttpStatusCode } from "@/lib/types";
 import type { ApiErrorResponse } from "@/lib/types";
 
-interface DeleteServiceResponse { ok: true }
+interface DeleteServiceResponse {
+  ok: true;
+}
 
 export async function DELETE(
   _request: Request,
@@ -15,7 +17,11 @@ export async function DELETE(
   const { id } = await context.params;
 
   if (!id) {
-    return errorResponse(ApiErrorCode.ValidationError, "Service id is required.", HttpStatusCode.BadRequest);
+    return errorResponse(
+      ApiErrorCode.ValidationError,
+      "Service id is required.",
+      HttpStatusCode.BadRequest,
+    );
   }
 
   const deleted = await deleteServiceById(id);

@@ -9,13 +9,21 @@ function isHttp2xx(statusCode: number): boolean {
   return statusCode >= 200 && statusCode < 300;
 }
 
-function abortCall(timeoutMs: number): { controller: AbortController; abort: ReturnType<typeof setTimeout> } {
+function abortCall(timeoutMs: number): {
+  controller: AbortController;
+  abort: ReturnType<typeof setTimeout>;
+} {
   const controller = new AbortController();
   const abort = setTimeout(() => controller.abort(), timeoutMs);
   return { controller, abort };
 }
 
-export function getStatus(params: { statusCode?: number; latencyMs: number; didTimeout: boolean; hadNetworkError: boolean }): ServiceStatus {
+export function getStatus(params: {
+  statusCode?: number;
+  latencyMs: number;
+  didTimeout: boolean;
+  hadNetworkError: boolean;
+}): ServiceStatus {
   const { statusCode, latencyMs, didTimeout, hadNetworkError } = params;
 
   if (didTimeout || hadNetworkError || latencyMs >= LATENCY_UPPER_SLOW_MS) return "DOWN";
@@ -42,7 +50,6 @@ export function computeHealthScore(status: ServiceStatus, latencyMs: number): nu
 }
 
 export async function checkServiceHealth(url: string): Promise<HealthCheckResult> {
-
   const startedAt = performance.now();
 
   let statusCode: number | undefined;
@@ -63,8 +70,7 @@ export async function checkServiceHealth(url: string): Promise<HealthCheckResult
     });
     statusCode = response.status;
   } catch (error) {
-    if (error && typeof error === "object" && "name" in error &&
-      error.name === "AbortError") {
+    if (error && typeof error === "object" && "name" in error && error.name === "AbortError") {
       didTimeout = true;
     } else {
       hadNetworkError = true;

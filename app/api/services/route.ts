@@ -15,23 +15,37 @@ export async function GET(): Promise<NextResponse<ServicesListResponse>> {
   return NextResponse.json({ services });
 }
 
-export async function POST(request: Request): Promise<NextResponse<ServiceResponse | ApiErrorResponse>> {
+export async function POST(
+  request: Request,
+): Promise<NextResponse<ServiceResponse | ApiErrorResponse>> {
   let payload: unknown;
   try {
     payload = await request.json();
   } catch {
-    return errorResponse(ApiErrorCode.ValidationError, "Invalid JSON payload.", HttpStatusCode.BadRequest);
+    return errorResponse(
+      ApiErrorCode.ValidationError,
+      "Invalid JSON payload.",
+      HttpStatusCode.BadRequest,
+    );
   }
 
   if (!payload || typeof payload !== "object") {
-    return errorResponse(ApiErrorCode.ValidationError, "Request body must be an object.", HttpStatusCode.BadRequest);
+    return errorResponse(
+      ApiErrorCode.ValidationError,
+      "Request body must be an object.",
+      HttpStatusCode.BadRequest,
+    );
   }
 
   const name = "name" in payload ? payload.name : undefined;
   const url = "url" in payload ? payload.url : undefined;
 
   if (typeof name !== "string" || typeof url !== "string") {
-    return errorResponse(ApiErrorCode.ValidationError, "Both name and url are required.", HttpStatusCode.BadRequest);
+    return errorResponse(
+      ApiErrorCode.ValidationError,
+      "Both name and url are required.",
+      HttpStatusCode.BadRequest,
+    );
   }
 
   const existingServices = await readServices();

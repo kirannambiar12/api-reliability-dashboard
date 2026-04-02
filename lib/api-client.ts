@@ -23,7 +23,10 @@ export async function fetchServices(): Promise<ServicesListResponse> {
   return parseResponse<ServicesListResponse>(response);
 }
 
-export async function createService(input: { name: string; url: string }): Promise<ServiceResponse> {
+export async function createService(input: {
+  name: string;
+  url: string;
+}): Promise<ServiceResponse> {
   const response = await fetch(API_PATHS.services, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
