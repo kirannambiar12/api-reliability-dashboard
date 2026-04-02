@@ -1,0 +1,64 @@
+import { Button } from "@/components/reusable/button";
+import { EmptyState, ErrorState, LoadingState } from "@/components/reusable/states";
+import { UI_TEXT } from "@/lib/dashboard-constants";
+import type { Service } from "@/lib/types";
+
+import { Table } from "../reusable/table";
+import type { TableColumn } from "../reusable/table";
+
+interface ServicesSectionProps {
+  services: Service[];
+  servicesQueryError: string | null;
+  actionError: string | null;
+  isServicesLoading: boolean;
+  isReloading: boolean;
+  columns: TableColumn<Service>[];
+  isRowBusy: (service: Service) => boolean;
+  onReloadAll: () => void;
+}
+
+export function ServicesSection({
+  services,
+  servicesQueryError,
+  actionError,
+  isServicesLoading,
+  isReloading,
+  columns,
+  isRowBusy,
+  onReloadAll,
+}: ServicesSectionProps) {
+  const shouldHideReloadButton =
+    services.length === 0 && Boolean(servicesQueryError || actionError);
+
+  return (
+    <section className="rounded-lg border border-zinc-200 p-5 min-h-[200px]">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-medium">Services</h2>
+        {!shouldHideReloadButton && (
+          <Button type="button" onClick={onReloadAll} disabled={isReloading}>
+            {isReloading ? "Refreshing all..." : "Reload All"}
+          </Button>
+        )}
+      </div>
+
+      {(servicesQueryError || actionError) && (
+        <ErrorState message={servicesQueryError || actionError || "Something went wrong"} />
+      )}
+
+      {isServicesLoading && <LoadingState message={UI_TEXT.loadingServices} />}
+
+      {!isServicesLoading && services.length === 0 && (
+        <EmptyState message={UI_TEXT.emptyServices} />
+      )}
+
+      {!isServicesLoading && services.length > 0 && !servicesQueryError && !actionError && (
+        <Table
+          columns={columns}
+          data={services}
+          getRowKey={(row) => row.id}
+          isRowBusy={isRowBusy}
+        />
+      )}
+    </section>
+  );
+}

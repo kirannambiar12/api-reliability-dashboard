@@ -1,0 +1,3 @@
+export const LATENCY_UPPER_UP_MS = 500;
+export const LATENCY_UPPER_SLOW_MS = 2000;
+export const HEALTH_CHECK_TIMEOUT_MS = 3000;

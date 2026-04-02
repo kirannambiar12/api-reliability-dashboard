@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# API Reliability Dashboard (Next.js App Router)
 
-## Getting Started
+This is a small internal dashboard to monitor the health and reliability of public APIs.
 
-First, run the development server:
+## Screenshots / Flows
+
+- **Empty state**
+  
+![Empty state](public/Empty%20State.png)
+
+- **Loading state**
+  
+![Loading state](public/Loading%20State.png)
+
+- **With data added**
+  
+![With data added](public/with%20data.png)
+
+- **Delete confirmation modal**
+  
+![Delete confirmation modal](public/Delete%20confirmation%20modal.png)
+
+- **Error state**
+  
+![Error state](public/Error%20state.png)
+
+- **Name already exists**
+  
+![Name already exists](public/Name%20already%20exists.png)
+
+- **URL already exists**
+  
+![URL already exists](public/Url%20already%20exists.png)
+
+## Requirements Covered (from the assignment)
+
+### Dashboard page
+
+For each service, the UI shows:
+
+- **Service name**
+- **Status** (`UP | SLOW | DOWN`)
+- **Response latency (ms)** (`latencyMs`)
+- **Last checked timestamp** (`lastCheckedAt`, ISO string)
+- **Health score**
+
+### Service management
+
+- **Add a service** (name + URL)
+- **Delete a service**
+- **Manually refresh** a service’s health status
+- **Local persistence** using a JSON file (`data/services.json`)
+
+## Status classification logic
+
+Status values are **`UP`**, **`SLOW`**, and **`DOWN`**.
+
+- **UP**: HTTP 2xx and response time \< 500ms
+- **SLOW**: HTTP 2xx and response time ≥ 500ms and \< 2000ms
+- **DOWN**: non-2xx response, network failure, timeout, or latency ≥ 2000ms
+
+The health check returns these fields:
+
+- `id` (string)
+- `name` (string)
+- `status` (`UP | SLOW | DOWN`)
+- `latencyMs` (number)
+- `lastCheckedAt` (ISO timestamp string)
+- `healthScore` (number)
+
+## API routes
+
+- **List services / Add service**
+  - `GET app/api/services/route.ts`
+  - `POST app/api/services/route.ts`
+- **Delete a service**
+  - `DELETE app/api/services/[id]/route.ts`
+- **Refresh one service**
+  - `POST app/api/services/[id]/refresh/route.ts`
+- **Refresh all services (parallel)**
+  - `POST app/api/services/refresh/route.ts`
+
+Client helpers live in `lib/api-client.ts`. API path constants live in `lib/dashboard-constants.ts`.
+
+## Local storage
+
+- `data/services.json` stores the services.
+- `lib/store.ts` handles JSON read/write and basic CRUD.
+
+## Tests
+
+I added small unit tests for core logic:
+
+- **Health logic**: `lib/tests/health.test.ts`
+- **Validation**: `lib/tests/validators.test.ts`
+
+Screenshots:
+
+![Tests passing](public/Test%20Pass.png)
+
+![Tests failing](public/Test%20Fail.png)
+
+## Developer tooling (to keep the repo clean)
+
+### Prettier
+
+- Used for consistent formatting across the codebase.
+
+### Husky (pre-commit)
+
+Pre-commit runs:
+
+- `npm run lint`
+- `npm run format:check`
+- `npm run test`
+
+Config: `.husky/pre-commit`
+
+## Folder structure (high level)
+
+- `.husky/`: Husky hooks
+- `app/`: Next.js App Router pages and API routes
+  - `app/api/`: API endpoints
+- `components/`: UI components
+  - `components/reusable/`: reusable core UI components
+  - `components/ui/`: dashboard-specific UI
+- `data/`: local persistence (JSON)
+- `lib/`: types, constants, utilities, validators, health logic
+
+## Local setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open `http://localhost:3000`.

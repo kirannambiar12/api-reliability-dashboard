@@ -1,65 +1,213 @@
-import Image from "next/image";
+"use client";
+
+import { useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { ConfirmModal } from "@/components/reusable/confirm-modal";
+import { ServicesSection } from "@/components/ui/services-section";
+import { Button } from "@/components/reusable/button";
+import { Input } from "@/components/reusable/input";
+import { ErrorState } from "@/components/reusable/states";
+import {
+  createService,
+  deleteService,
+  fetchServices,
+  refreshAllServices,
+  refreshService,
+} from "@/lib/api-client";
+import { API_PATHS, UI_TEXT } from "@/lib/dashboard-constants";
+import { getServiceRowBusy, getServiceTableColumns } from "@/components/ui/service-table-columns";
+import { validateServiceInput } from "@/lib/validators";
 
 export default function Home() {
+  const queryClient = useQueryClient();
+  const [formError, setFormError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [url, setUrl] = useState("");
+  const [pendingDeleteService, setPendingDeleteService] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+
+  const {
+    data: servicesData,
+    error: servicesError,
+    isLoading: isServicesLoading,
+    isFetching: isServicesFetching,
+  } = useQuery({
+    queryKey: [API_PATHS.services],
+    queryFn: fetchServices,
+  });
+
+  const { mutateAsync: mutateCreate, isPending: isCreatePending } = useMutation({
+    mutationFn: createService,
+    onSuccess: async () => {
+      setName("");
+      setUrl("");
+      await queryClient.invalidateQueries({ queryKey: [API_PATHS.services] });
+    },
+    onError: (error) => {
+      setFormError(error instanceof Error ? error.message : "Unable to create service.");
+    },
+  });
+
+  const {
+    mutateAsync: mutateRefresh,
+    isPending: isRefreshPending,
+    variables: refreshServiceId,
+  } = useMutation({
+    mutationFn: refreshService,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [API_PATHS.services] });
+    },
+    onError: (error) => {
+      setActionError(error instanceof Error ? error.message : "Unable to refresh service.");
+    },
+  });
+
+  const {
+    mutateAsync: mutateDelete,
+    isPending: isDeletePending,
+    variables: deleteServiceId,
+  } = useMutation({
+    mutationFn: deleteService,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [API_PATHS.services] });
+    },
+    onError: (error) => {
+      setActionError(error instanceof Error ? error.message : "Unable to delete service.");
+    },
+  });
+
+  const { mutateAsync: mutateRefreshAll, isPending: isRefreshAllPending } = useMutation({
+    mutationFn: refreshAllServices,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [API_PATHS.services] });
+    },
+    onError: (error) => {
+      setActionError(error instanceof Error ? error.message : "Unable to refresh services.");
+    },
+  });
+
+  async function handleRefresh(serviceId: string): Promise<void> {
+    setActionError(null);
+    await mutateRefresh(serviceId);
+  }
+
+  const sortedServices = useMemo(
+    () => [...(servicesData?.services ?? [])].sort((a, b) => a.name.localeCompare(b.name)),
+    [servicesData?.services],
+  );
+
+  const isRefreshBusy = (service: { id: string }) =>
+    Boolean(isRefreshPending && refreshServiceId === service.id);
+
+  const isDeleteBusy = (service: { id: string }) =>
+    Boolean(isDeletePending && deleteServiceId === service.id);
+
+  const serviceTableColumns = getServiceTableColumns({
+    onRefresh: handleRefresh,
+    onDeleteClick: setPendingDeleteService,
+    isRefreshBusy,
+    isDeleteBusy,
+  });
+
+  const isServiceRowBusy = getServiceRowBusy({
+    isRefreshBusy,
+    isDeleteBusy,
+  });
+
+  async function handleAddService(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    setFormError(null);
+
+    const validated = validateServiceInput({
+      name,
+      url,
+      existingServices: sortedServices,
+    });
+
+    if (!validated.ok) {
+      setFormError(validated.error);
+      return;
+    }
+
+    await mutateCreate(validated.value);
+  }
+
+  async function handleDelete(serviceId: string): Promise<void> {
+    setActionError(null);
+    await mutateDelete(serviceId);
+  }
+
+  async function handleConfirmDelete(): Promise<void> {
+    if (!pendingDeleteService) return;
+    await handleDelete(pendingDeleteService.id);
+    setPendingDeleteService(null);
+  }
+
+  const servicesQueryError = servicesError instanceof Error ? servicesError.message : null;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-6 px-6 py-8">
+      <header className="space-y-1">
+        <h1 className="text-2xl font-semibold">{UI_TEXT.appTitle}</h1>
+        <p className="text-sm text-zinc-600">{UI_TEXT.appSubtitle}</p>
+      </header>
+
+      <section className="rounded-lg border border-zinc-200 p-4">
+        <h2 className="mb-3 text-lg font-medium">Add Service</h2>
+        <form onSubmit={handleAddService} className="grid gap-3 md:grid-cols-[1fr_2fr_auto]">
+          <Input
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            placeholder="Service name"
+          />
+          <Input
+            value={url}
+            onChange={(event) => setUrl(event.target.value)}
+            placeholder={UI_TEXT.urlInputPlaceholder}
+          />
+          <Button type="submit" variant="primary" disabled={isCreatePending}>
+            {isCreatePending ? "Adding..." : "Add"}
+          </Button>
+        </form>
+        {formError ? (
+          <div className="mt-2">
+            <ErrorState message={formError} />
+          </div>
+        ) : null}
+      </section>
+
+      <ServicesSection
+        services={sortedServices}
+        servicesQueryError={servicesQueryError}
+        actionError={actionError}
+        isServicesLoading={isServicesLoading}
+        isReloading={isServicesFetching || isRefreshAllPending}
+        columns={serviceTableColumns}
+        isRowBusy={isServiceRowBusy}
+        onReloadAll={() => {
+          setActionError(null);
+          void mutateRefreshAll();
+        }}
+      />
+
+      <ConfirmModal
+        isOpen={Boolean(pendingDeleteService)}
+        title="Delete service"
+        description={
+          pendingDeleteService
+            ? `Are you sure you want to delete "${pendingDeleteService.name}"?`
+            : "Are you sure you want to delete this service?"
+        }
+        confirmLabel="Confirm"
+        cancelLabel="Cancel"
+        isConfirming={isDeletePending}
+        onCancel={() => setPendingDeleteService(null)}
+        onConfirm={() => void handleConfirmDelete()}
+      />
+    </main>
   );
 }
