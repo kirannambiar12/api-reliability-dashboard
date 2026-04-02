@@ -112,3 +112,7 @@ Config: `.husky/pre-commit`
   - `components/ui/`: dashboard-specific UI
 - `data/`: local persistence (JSON)
 - `lib/`: types, constants, utilities, validators, health logic
+
+## Live demo
+
+Hosted at: https://kn-ard.vercel.app/
