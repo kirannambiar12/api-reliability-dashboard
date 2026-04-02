@@ -15,12 +15,6 @@ function abortCall(timeoutMs: number): { controller: AbortController; abort: Ret
   return { controller, abort };
 }
 
-function buildCacheBypassUrl(rawUrl: string): string {
-  const parsed = new URL(rawUrl);
-  parsed.searchParams.set("_healthCheckTs", Date.now().toString());
-  return parsed.toString();
-}
-
 export function getStatus(params: { statusCode?: number; latencyMs: number; didTimeout: boolean; hadNetworkError: boolean }): ServiceStatus {
   const { statusCode, latencyMs, didTimeout, hadNetworkError } = params;
 
@@ -56,10 +50,9 @@ export async function checkServiceHealth(url: string): Promise<HealthCheckResult
   let hadNetworkError = false;
 
   const { controller, abort } = abortCall(HEALTH_CHECK_TIMEOUT_MS);
-  const requestUrl = buildCacheBypassUrl(url);
 
   try {
-    const response = await fetch(requestUrl, {
+    const response = await fetch(url, {
       method: "GET",
       cache: "no-store",
       headers: {

@@ -10,4 +10,5 @@ export const UI_TEXT = {
   appSubtitle: "Track health, latency, and uptime signals for monitored services.",
   loadingServices: "Loading services...",
   emptyServices: "No services yet. Add one above to start monitoring.",
+  urlInputPlaceholder: "https://google.com",
 };

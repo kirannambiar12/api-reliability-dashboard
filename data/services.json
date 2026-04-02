@@ -1,20 +1,11 @@
 [
   {
-    "id": "b3b9075b-3b4e-4e4f-8306-ff17840d238c",
-    "name": "Countries",
-    "url": "https://restcountries.com/v3.1/name/singapore",
-    "status": "SLOW",
-    "latencyMs": 737,
-    "lastCheckedAt": "2026-04-01T12:58:50.639Z",
-    "healthScore": 78
-  },
-  {
     "id": "dfc524cc-6307-47db-8068-ef4a757b4254",
     "name": "Github",
     "url": "https://api.github.com/repos/vercel/next.js",
     "status": "UP",
-    "latencyMs": 426,
-    "lastCheckedAt": "2026-04-01T12:58:52.391Z",
+    "latencyMs": 440,
+    "lastCheckedAt": "2026-04-02T05:19:59.774Z",
     "healthScore": 96
   },
   {
@@ -22,17 +13,17 @@
     "name": "Weather",
     "url": "https://api.open-meteo.com/v1/forecast?latitude=1.29&longitude;=%20103.85&current;_weather=true",
     "status": "DOWN",
-    "latencyMs": 1202,
-    "lastCheckedAt": "2026-04-01T12:55:22.642Z",
+    "latencyMs": 1163,
+    "lastCheckedAt": "2026-04-02T05:28:30.847Z",
     "healthScore": 0
   },
   {
     "id": "976fbb2b-6bd5-4279-8ac4-7585c3b32032",
     "name": "Hacker News",
     "url": "https://hn.algolia.com/api/v1/search?query=ai",
-    "status": "DOWN",
-    "latencyMs": 526,
-    "lastCheckedAt": "2026-04-01T12:58:48.648Z",
-    "healthScore": 0
+    "status": "SLOW",
+    "latencyMs": 578,
+    "lastCheckedAt": "2026-04-02T05:28:26.642Z",
+    "healthScore": 80
   }
 ]
