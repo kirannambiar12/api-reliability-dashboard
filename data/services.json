@@ -11,7 +11,7 @@
   {
     "id": "ef1d7166-8456-4572-aec3-81abedf4203b",
     "name": "Weather",
-    "url": "https://api.open-meteo.com/v1/forecast?latitude=1.29&longitude;=%20103.85&current;_weather=true",
+    "url": "https://api.open-meteo.com/v1/forecast?latitude=1.29&longitude=103.85&current_weather=true",
     "status": "DOWN",
     "latencyMs": 1119,
     "lastCheckedAt": "2026-04-02T07:42:45.692Z",

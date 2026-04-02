@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# API Reliability Dashboard (Next.js App Router)
 
-## Getting Started
+This is a small internal dashboard to monitor the health and reliability of public APIs.
 
-First, run the development server:
+## Screenshots / Flows
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Empty state**
+  - `public/Empty State.png`
+- **Loading state**
+  - `public/Loading State.png`
+- **With data added**
+  - `public/with data.png`
+- **Delete confirmation modal**
+  - `public/Delete confirmation modal.png`
+- **Error state**
+  - `public/Error state.png`
+- **Name already exists**
+  - `public/Name already exists.png`
+- **URL already exists**
+  - `public/Url already exists.png`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Requirements Covered (from the assignment)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Dashboard page
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+For each service, the UI shows:
 
-## Learn More
+- **Service name**
+- **Status** (`UP | SLOW | DOWN`)
+- **Response latency (ms)** (`latencyMs`)
+- **Last checked timestamp** (`lastCheckedAt`, ISO string)
+- **Health score**
 
-To learn more about Next.js, take a look at the following resources:
+### Service management
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Add a service** (name + URL)
+- **Delete a service**
+- **Manually refresh** a service’s health status
+- **Local persistence** using a JSON file (`data/services.json`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Status classification logic
 
-## Deploy on Vercel
+Status values are **`UP`**, **`SLOW`**, and **`DOWN`**.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **UP**: HTTP 2xx and response time \< 500ms
+- **SLOW**: HTTP 2xx and response time ≥ 500ms and \< 2000ms
+- **DOWN**: non-2xx response, network failure, timeout, or latency ≥ 2000ms
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The health check returns these fields:
+
+- `id` (string)
+- `name` (string)
+- `status` (`UP | SLOW | DOWN`)
+- `latencyMs` (number)
+- `lastCheckedAt` (ISO timestamp string)
+- `healthScore` (number)
+
+## API routes
+
+- **List services / Add service**
+  - `GET app/api/services/route.ts`
+  - `POST app/api/services/route.ts`
+- **Delete a service**
+  - `DELETE app/api/services/[id]/route.ts`
+- **Refresh one service**
+  - `POST app/api/services/[id]/refresh/route.ts`
+- **Refresh all services (parallel)**
+  - `POST app/api/services/refresh/route.ts`
+
+Client helpers live in `lib/api-client.ts`. API path constants live in `lib/dashboard-constants.ts`.
+
+## Local storage
+
+- `data/services.json` stores the services.
+- `lib/store.ts` handles JSON read/write and basic CRUD.
+
+## Tests
+
+I added small unit tests for core logic:
+
+- **Health logic**: `lib/tests/health.test.ts`
+- **Validation**: `lib/tests/validators.test.ts`
+
+Screenshots:
+
+- `public/Test Pass.png`
+- `public/Test Fail.png`
+
+## Developer tooling (to keep the repo clean)
+
+### Prettier
+
+- Used for consistent formatting across the codebase.
+
+### Husky (pre-commit)
+
+Pre-commit runs:
+
+- `npm run lint`
+- `npm run format:check`
+- `npm run test`
+
+Config: `.husky/pre-commit`
+
+## Folder structure (high level)
+
+- `.husky/`: Husky hooks
+- `app/`: Next.js App Router pages and API routes
+  - `app/api/`: API endpoints
+- `components/`: UI components
+  - `components/reusable/`: reusable core UI components
+  - `components/ui/`: dashboard-specific UI
+- `data/`: local persistence (JSON)
+- `lib/`: types, constants, utilities, validators, health logic

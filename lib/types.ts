@@ -20,8 +20,8 @@ export interface Service {
   name: string;
   url: string;
   status: ServiceStatus;
-  latencyMs: number | null;
-  lastCheckedAt: string | null;
+  latencyMs: number;
+  lastCheckedAt: string;
   healthScore: number;
 }
 
