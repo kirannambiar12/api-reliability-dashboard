@@ -4,10 +4,10 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ConfirmModal } from "@/components/reusable/confirm-modal";
-import { Table } from "@/components/reusable/table";
+import { ServicesSection } from "@/components/reusable/services-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { EmptyState, ErrorState, LoadingState } from "@/components/ui/states";
+import { ErrorState } from "@/components/ui/states";
 import {
   createService,
   deleteService,
@@ -177,44 +177,19 @@ export default function Home() {
         {formError ? <div className="mt-2"><ErrorState message={formError} /></div> : null}
       </section>
 
-      <section className="rounded-lg border border-zinc-200 p-5">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-medium">Services</h2>
-          <Button
-            type="button"
-            onClick={() => {
-              setActionError(null);
-              void mutateRefreshAll();
-            }}
-            disabled={isServicesFetching || isRefreshAllPending}
-          >
-            {isRefreshAllPending ? "Refreshing all..." : "Reload All"}
-          </Button>
-        </div>
-
-        {servicesQueryError ? (
-          <div className="mb-3"><ErrorState message={servicesQueryError} /></div>
-        ) : null}
-
-        {actionError ? <div className="mb-3"><ErrorState message={actionError} /></div> : null}
-
-        {isServicesLoading ? (
-          <LoadingState message={UI_TEXT.loadingServices} />
-        ) : null}
-
-        {!isServicesLoading && sortedServices.length === 0 ? (
-          <EmptyState message={UI_TEXT.emptyServices} />
-        ) : null}
-
-        {!isServicesLoading && sortedServices.length > 0 ? (
-          <Table
-            columns={serviceTableColumns}
-            data={sortedServices}
-            getRowKey={(row) => row.id}
-            isRowBusy={isServiceRowBusy}
-          />
-        ) : null}
-      </section>
+      <ServicesSection
+        services={sortedServices}
+        servicesQueryError={servicesQueryError}
+        actionError={actionError}
+        isServicesLoading={isServicesLoading}
+        isReloading={isServicesFetching || isRefreshAllPending}
+        columns={serviceTableColumns}
+        isRowBusy={isServiceRowBusy}
+        onReloadAll={() => {
+          setActionError(null);
+          void mutateRefreshAll();
+        }}
+      />
 
       <ConfirmModal
         isOpen={Boolean(pendingDeleteService)}
