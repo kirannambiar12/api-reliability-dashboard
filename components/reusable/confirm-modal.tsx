@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/reusable/button";
 
 interface ConfirmModalProps {
   isOpen: boolean;

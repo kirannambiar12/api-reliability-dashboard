@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { EmptyState, ErrorState, LoadingState } from "@/components/ui/states";
+import { Button } from "@/components/reusable/button";
+import { EmptyState, ErrorState, LoadingState } from "@/components/reusable/states";
 import { UI_TEXT } from "@/lib/dashboard-constants";
 import type { Service } from "@/lib/types";
 
-import { Table } from "./table";
-import type { TableColumn } from "./table";
+import { Table } from "../reusable/table";
+import type { TableColumn } from "../reusable/table";
 
 interface ServicesSectionProps {
   services: Service[];

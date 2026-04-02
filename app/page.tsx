@@ -4,10 +4,10 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { ConfirmModal } from "@/components/reusable/confirm-modal";
-import { ServicesSection } from "@/components/reusable/services-section";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ErrorState } from "@/components/ui/states";
+import { ServicesSection } from "@/components/ui/services-section";
+import { Button } from "@/components/reusable/button";
+import { Input } from "@/components/reusable/input";
+import { ErrorState } from "@/components/reusable/states";
 import {
   createService,
   deleteService,
@@ -16,7 +16,8 @@ import {
   refreshService,
 } from "@/lib/api-client";
 import { API_PATHS, UI_TEXT } from "@/lib/dashboard-constants";
-import { getServiceRowBusy, getServiceTableColumns } from "@/lib/service-table-columns";
+import { getServiceRowBusy, getServiceTableColumns } from "@/components/ui/service-table-columns";
+import { validateServiceInput } from "@/lib/validators";
 
 export default function Home() {
   const queryClient = useQueryClient();
@@ -120,7 +121,19 @@ export default function Home() {
   async function handleAddService(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     setFormError(null);
-    await mutateCreate({ name, url });
+
+    const validated = validateServiceInput({
+      name,
+      url,
+      existingServices: sortedServices,
+    });
+
+    if (!validated.ok) {
+      setFormError(validated.error);
+      return;
+    }
+
+    await mutateCreate(validated.value);
   }
 
   async function handleDelete(serviceId: string): Promise<void> {

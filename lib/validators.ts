@@ -45,6 +45,15 @@ function isDuplicateServiceUrl(url: string, services: Service[]): boolean {
   });
 }
 
+function isDuplicateServiceName(name: string, services: Service[]): boolean {
+  const normalizedIncomingName = name.trim().replace(/\s+/g, " ").toLowerCase();
+
+  return services.some((service) => {
+    const normalizedExistingName = service.name.trim().replace(/\s+/g, " ").toLowerCase();
+    return normalizedExistingName === normalizedIncomingName;
+  });
+}
+
 export function validateServiceInput(input: {
   name: string;
   url: string;
@@ -59,6 +68,10 @@ export function validateServiceInput(input: {
 
   if (normalizedName.length > 80) {
     return { ok: false, error: "Service name must be 80 characters or less." };
+  }
+
+  if (isDuplicateServiceName(normalizedName, existingServices)) {
+    return { ok: false, error: "This service name already exists." };
   }
 
   let normalizedUrl: string;

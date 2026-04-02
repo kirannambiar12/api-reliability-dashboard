@@ -50,6 +50,29 @@ describe("validateServiceInput", () => {
     }
   });
 
+  it("rejects duplicate service names", () => {
+    const result = validateServiceInput({
+      name: "   existing   service ",
+      url: "https://api.example.com/new-endpoint",
+      existingServices: [
+        {
+          id: "svc-1",
+          name: "Existing Service",
+          url: "https://api.example.com/health",
+          status: "UP",
+          latencyMs: 120,
+          lastCheckedAt: "2026-01-01T00:00:00.000Z",
+          healthScore: 95,
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error).toBe("This service name already exists.");
+    }
+  });
+
   it("returns normalized values for valid input", () => {
     const result = validateServiceInput({
       name: "   My   API   ",
