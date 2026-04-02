@@ -5,19 +5,32 @@ This is a small internal dashboard to monitor the health and reliability of publ
 ## Screenshots / Flows
 
 - **Empty state**
-  - `public/Empty State.png`
+  
+![Empty state](public/Empty%20State.png)
+
 - **Loading state**
-  - `public/Loading State.png`
+  
+![Loading state](public/Loading%20State.png)
+
 - **With data added**
-  - `public/with data.png`
+  
+![With data added](public/with%20data.png)
+
 - **Delete confirmation modal**
-  - `public/Delete confirmation modal.png`
+  
+![Delete confirmation modal](public/Delete%20confirmation%20modal.png)
+
 - **Error state**
-  - `public/Error state.png`
+  
+![Error state](public/Error%20state.png)
+
 - **Name already exists**
-  - `public/Name already exists.png`
+  
+![Name already exists](public/Name%20already%20exists.png)
+
 - **URL already exists**
-  - `public/Url already exists.png`
+  
+![URL already exists](public/Url%20already%20exists.png)
 
 ## Requirements Covered (from the assignment)
 
@@ -83,8 +96,9 @@ I added small unit tests for core logic:
 
 Screenshots:
 
-- `public/Test Pass.png`
-- `public/Test Fail.png`
+![Tests passing](public/Test%20Pass.png)
+
+![Tests failing](public/Test%20Fail.png)
 
 ## Developer tooling (to keep the repo clean)
 
