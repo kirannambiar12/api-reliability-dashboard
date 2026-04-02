@@ -27,35 +27,40 @@ export function ServicesSection({
   isRowBusy,
   onReloadAll,
 }: ServicesSectionProps) {
+  const shouldHideReloadButton =
+    services.length === 0 && Boolean(servicesQueryError || actionError);
+
   return (
     <section className="rounded-lg border border-zinc-200 p-5 min-h-[200px]">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-medium">Services</h2>
-        <Button type="button" onClick={onReloadAll} disabled={isReloading}>
-          {isReloading ? "Refreshing all..." : "Reload All"}
-        </Button>
+        {!shouldHideReloadButton && (
+          <Button type="button" onClick={onReloadAll} disabled={isReloading}>
+            {isReloading ? "Refreshing all..." : "Reload All"}
+          </Button>
+        )}
       </div>
 
-      {servicesQueryError || actionError ? (
+      {(servicesQueryError || actionError) && (
         <ErrorState message={servicesQueryError || actionError || "Something went wrong"} />
-      ) : null}
+      )}
 
-      {isServicesLoading ? (
+      {isServicesLoading && (
         <LoadingState message={UI_TEXT.loadingServices} />
-      ) : null}
+      )}
 
-      {!isServicesLoading && services.length === 0 ? (
+      {!isServicesLoading && services.length === 0 && (
         <EmptyState message={UI_TEXT.emptyServices} />
-      ) : null}
+      )}
 
-      {!isServicesLoading && services.length > 0 && !servicesQueryError && !actionError ? (
+      {!isServicesLoading && services.length > 0 && !servicesQueryError && !actionError && (
         <Table
           columns={columns}
           data={services}
           getRowKey={(row) => row.id}
           isRowBusy={isRowBusy}
         />
-      ) : null}
+      )}
     </section>
   );
 }

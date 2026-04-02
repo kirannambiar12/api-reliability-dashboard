@@ -4,17 +4,17 @@
     "name": "Github",
     "url": "https://api.github.com/repos/vercel/next.js",
     "status": "UP",
-    "latencyMs": 440,
-    "lastCheckedAt": "2026-04-02T05:19:59.774Z",
-    "healthScore": 96
+    "latencyMs": 92,
+    "lastCheckedAt": "2026-04-02T07:33:27.249Z",
+    "healthScore": 100
   },
   {
     "id": "7fab5857-11c3-47a2-993b-9bb53216b324",
     "name": "Weather",
     "url": "https://api.open-meteo.com/v1/forecast?latitude=1.29&longitude;=%20103.85&current;_weather=true",
     "status": "DOWN",
-    "latencyMs": 1163,
-    "lastCheckedAt": "2026-04-02T05:28:30.847Z",
+    "latencyMs": 232,
+    "lastCheckedAt": "2026-04-02T07:33:27.392Z",
     "healthScore": 0
   },
   {
@@ -22,8 +22,8 @@
     "name": "Hacker News",
     "url": "https://hn.algolia.com/api/v1/search?query=ai",
     "status": "SLOW",
-    "latencyMs": 578,
-    "lastCheckedAt": "2026-04-02T05:28:26.642Z",
+    "latencyMs": 560,
+    "lastCheckedAt": "2026-04-02T07:33:27.720Z",
     "healthScore": 80
   }
 ]
